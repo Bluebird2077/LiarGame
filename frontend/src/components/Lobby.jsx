@@ -3,14 +3,27 @@ import { socket } from '../socket';
 
 function Lobby({ nickname, setNickname, onRoomCreated, onRoomJoined }) {
   const [joinCode, setJoinCode] = useState('');
+  const [isAutoJoining, setIsAutoJoining] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
     if (code) {
       setJoinCode(code);
+      setIsAutoJoining(true);
+      // Give a slight delay so socket can connect properly before emitting
+      setTimeout(() => {
+        socket.emit('joinRoom', { roomId: code, nickname }, (response) => {
+          setIsAutoJoining(false);
+          if (response.success) {
+            onRoomJoined(response.roomId, response.players);
+          } else {
+            alert(response.message);
+          }
+        });
+      }, 500);
     }
-  }, []);
+  }, [nickname, onRoomJoined]);
 
   const handleCreateRoom = () => {
     if (!nickname.trim()) return alert('닉네임을 입력해주세요!');
@@ -33,6 +46,17 @@ function Lobby({ nickname, setNickname, onRoomCreated, onRoomJoined }) {
       }
     });
   };
+
+  if (isAutoJoining) {
+    return (
+      <div className="glass-panel" style={{ textAlign: 'center' }}>
+        <h2>방에 입장하는 중...</h2>
+        <div className="status-message" style={{ marginTop: '20px' }}>
+          잠시만 기다려주세요!
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="glass-panel">
