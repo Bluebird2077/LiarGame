@@ -7,10 +7,17 @@ import GameRoom from './components/GameRoom';
 function App() {
   const [gameState, setGameState] = useState('LOBBY'); // LOBBY, WAITING, GAME
   const [roomId, setRoomId] = useState('');
-  const [nickname, setNickname] = useState('Player_' + Math.floor(Math.random() * 1000));
+  const [nickname, setNickname] = useState(() => {
+    return localStorage.getItem('liarGameNickname') || ('Player_' + Math.floor(Math.random() * 1000));
+  });
   const [players, setPlayers] = useState([]);
   const [myId, setMyId] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [myKeyword, setMyKeyword] = useState('가져오는 중...');
+
+  useEffect(() => {
+    localStorage.setItem('liarGameNickname', nickname);
+  }, [nickname]);
 
   useEffect(() => {
     socket.connect();
@@ -32,12 +39,17 @@ function App() {
       setGameState('GAME');
     });
 
+    socket.on('yourKeyword', (data) => {
+      setMyKeyword(data.keyword);
+    });
+
     return () => {
       socket.disconnect();
       socket.off('connect');
       socket.off('playerListUpdate');
       socket.off('errorMsg');
       socket.off('gameStarted');
+      socket.off('yourKeyword');
     };
   }, []);
 
@@ -58,6 +70,7 @@ function App() {
     setGameState('LOBBY');
     setRoomId('');
     setPlayers([]);
+    setMyKeyword('가져오는 중...'); // 리셋
   };
 
   const isHost = players.find(p => p.id === myId)?.isHost || false;
@@ -89,6 +102,7 @@ function App() {
         <GameRoom 
           roomId={roomId}
           isHost={isHost}
+          keyword={myKeyword}
           onLeave={handleLeaveRoom}
         />
       )}

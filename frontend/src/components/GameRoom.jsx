@@ -1,22 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { socket } from '../socket';
 
-function GameRoom({ roomId, isHost, onLeave }) {
-  const [keyword, setKeyword] = useState('가져오는 중...');
+function GameRoom({ roomId, isHost, keyword, onLeave }) {
   const [gameStatus, setGameStatus] = useState('게임 시작! 대화를 나눈 후 라이어를 찾아보세요.');
 
   useEffect(() => {
-    socket.on('yourKeyword', (data) => {
-      setKeyword(data.keyword);
-      // We don't necessarily show if they are the liar except implicitly by their keyword.
-    });
-
     socket.on('gameStatusUpdate', (msg) => {
       setGameStatus(msg);
     });
 
     return () => {
-      socket.off('yourKeyword');
       socket.off('gameStatusUpdate');
     };
   }, []);
