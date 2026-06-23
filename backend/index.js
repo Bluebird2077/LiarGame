@@ -163,17 +163,40 @@ io.on('connection', (socket) => {
       
       const jsonStr = cleanJsonStr.substring(startIndex, endIndex + 1);
       
-      // Replace single quotes with double quotes roughly (to mimic python dict fix)
       let fixedJsonStr = jsonStr.replace(/'([^']+)'\s*:\s*'([^']*)'/g, '"$1": "$2"');
       fixedJsonStr = fixedJsonStr.replace(/'(\w+)'/g, '"$1"');
 
-      const keywords = JSON.parse(fixedJsonStr);
-      
-      if (!keywords.normal || !keywords.liar) {
-        throw new Error("Invalid keyword format");
+      let keywords;
+      try {
+        keywords = JSON.parse(fixedJsonStr);
+      } catch (parseErr) {
+        throw new Error(`JSON 파싱 실패: ${jsonStr}`);
       }
 
-      console.log(`Keywords received - Normal: ${keywords.normal}, Liar: ${keywords.liar}`);
+      // Robust search for normal and liar keys in case the AI nested them
+      let finalNormal = keywords.normal;
+      let finalLiar = keywords.liar;
+
+      if (!finalNormal || !finalLiar) {
+        // Search recursively
+        const searchKeys = (obj) => {
+          for (let key in obj) {
+            if (typeof obj[key] === 'object') {
+              searchKeys(obj[key]);
+            } else if (typeof obj[key] === 'string') {
+              if (key.toLowerCase().includes('normal') || key.toLowerCase() === '일반인') finalNormal = obj[key];
+              if (key.toLowerCase().includes('liar') || key.toLowerCase() === '라이어') finalLiar = obj[key];
+            }
+          }
+        };
+        searchKeys(keywords);
+      }
+      
+      if (!finalNormal || !finalLiar) {
+        throw new Error(`Invalid format. AI returned: ${jsonStr}`);
+      }
+
+      console.log(`Keywords received - Normal: ${finalNormal}, Liar: ${finalLiar}`);
 
       // Pick a liar
       const numPlayers = room.players.length;
@@ -181,7 +204,7 @@ io.on('connection', (socket) => {
       
       room.players.forEach((p, idx) => {
         p.isLiar = (idx === liarIndex);
-        p.keyword = p.isLiar ? keywords.liar : keywords.normal;
+        p.keyword = p.isLiar ? finalLiar : finalNormal;
       });
 
       room.isGameStarted = true;
