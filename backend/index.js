@@ -209,8 +209,8 @@ io.on('connection', (socket) => {
 
       room.isGameStarted = true;
 
-      // Broadcast game start
-      io.to(roomId).emit('gameStarted');
+      // Broadcast game start with category
+      io.to(roomId).emit('gameStarted', { category: room.category });
 
       // Send individual keywords to players
       room.players.forEach(p => {

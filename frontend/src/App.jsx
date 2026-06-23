@@ -14,6 +14,7 @@ function App() {
   const [myId, setMyId] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [myKeyword, setMyKeyword] = useState('가져오는 중...');
+  const [gameCategory, setGameCategory] = useState('');
 
   useEffect(() => {
     localStorage.setItem('liarGameNickname', nickname);
@@ -32,11 +33,14 @@ function App() {
 
     socket.on('errorMsg', (msg) => {
       setErrorMsg(msg);
-      setTimeout(() => setErrorMsg(''), 3000);
+      setTimeout(() => setErrorMsg(''), 5000);
     });
 
-    socket.on('gameStarted', () => {
+    socket.on('gameStarted', (data) => {
       setGameState('GAME');
+      if (data && data.category) {
+        setGameCategory(data.category);
+      }
     });
 
     socket.on('yourKeyword', (data) => {
@@ -109,6 +113,7 @@ function App() {
           roomId={roomId}
           isHost={isHost}
           keyword={myKeyword}
+          category={gameCategory}
           onLeave={handleLeaveRoom}
         />
       )}
