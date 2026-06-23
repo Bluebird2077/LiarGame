@@ -11,6 +11,10 @@ function Lobby({ nickname, setNickname, onRoomCreated, onRoomJoined }) {
     if (code) {
       setJoinCode(code);
       setIsAutoJoining(true);
+      
+      // URL에서 방 코드를 지워줍니다. (방에서 나갔을 때 다시 자동입장 되는 무한루프 방지)
+      window.history.replaceState({}, document.title, window.location.pathname);
+
       // Give a slight delay so socket can connect properly before emitting
       setTimeout(() => {
         socket.emit('joinRoom', { roomId: code, nickname }, (response) => {
