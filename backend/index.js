@@ -97,6 +97,9 @@ io.on('connection', (socket) => {
       return;
     }
 
+    // Save the category to the room so it can be broadcasted later
+    room.category = category;
+
     // Notify clients that AI is thinking
     io.to(roomId).emit('gameStatusUpdate', 'AI가 주제를 생각 중입니다...');
 
