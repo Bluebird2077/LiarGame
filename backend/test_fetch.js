@@ -1,5 +1,5 @@
 async function test() {
-  const url = 'https://script.google.com/macros/s/AKfycbyrVpQlVT-Wqecaqju_uUTrQqR8tCJXPY_suVEP1dhiPEoxjRm-EuT1qsiXRmE0P4lGNQ/exec';
+  const url = 'https://script.google.com/macros/s/AKfycbxEoIOd7t3dirCoP2jOMGP38Tb6gWHl2AOEfyYNMRL7CePFZejvZA5HW2yL2MjlhquStg/exec';
   const category = '동물';
   const prompt = `
 당신은 창의적이면서도 논리적인 '게임 콘텐츠 설계자'입니다. 

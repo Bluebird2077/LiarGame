@@ -15,7 +15,7 @@ const io = new Server(server, {
   }
 });
 
-const AI_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxEoIOd7t3dirCoP2jOMGP38Tb6gWHl2AOEfyYNMRL7CePFZejvZA5HW2yL2MjlhquStg/exec';
+const AI_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwAep8vvUouBbIUGqXi-vO8sB6YaPdb6w0Yz5KZQh6LgOm8mCbQCGsbZHPf98OP4xmZuA/exec';
 
 // Room state storage
 // {
