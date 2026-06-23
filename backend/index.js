@@ -197,11 +197,12 @@ io.on('connection', (socket) => {
         });
       });
 
-    } catch (err) {
-      console.error("AI Request Failed:", err);
-      io.to(roomId).emit('gameStatusUpdate', 'AI 키워드 생성에 실패했습니다. 다시 시도해주세요.');
-      io.to(roomId).emit('errorMsg', 'AI 연결 오류가 발생했습니다.');
-    }
+      } catch (err) {
+        console.error("AI Request Failed:", err);
+        const detailedError = err.response && err.response.data ? String(err.response.data) : err.message;
+        io.to(roomId).emit('gameStatusUpdate', 'AI 키워드 생성에 실패했습니다. 다시 시도해주세요.');
+        io.to(roomId).emit('errorMsg', `AI 연결 오류: ${detailedError}`);
+      }
   });
 
   // Leave room logic
