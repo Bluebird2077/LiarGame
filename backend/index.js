@@ -228,6 +228,20 @@ io.on('connection', (socket) => {
       }
   });
 
+  // End Game (Return to waiting room)
+  socket.on('endGame', ({ roomId }) => {
+    const room = rooms[roomId];
+    if (room && room.isGameStarted) {
+      room.isGameStarted = false;
+      // Clear keywords
+      room.players.forEach(p => {
+        p.keyword = '';
+        p.isLiar = false;
+      });
+      io.to(roomId).emit('gameEnded');
+    }
+  });
+
   // Leave room logic
   socket.on('leaveRoom', ({ roomId }) => {
     handleDisconnect(socket.id, roomId);

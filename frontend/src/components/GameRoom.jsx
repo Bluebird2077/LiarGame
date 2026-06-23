@@ -14,6 +14,10 @@ function GameRoom({ roomId, isHost, keyword, onLeave }) {
     };
   }, []);
 
+  const handleEndGame = () => {
+    socket.emit('endGame', { roomId });
+  };
+
   return (
     <div className="glass-panel">
       <h2>게임 진행 중</h2>
@@ -31,9 +35,22 @@ function GameRoom({ roomId, isHost, keyword, onLeave }) {
         {gameStatus}
       </div>
 
-      <button className="danger" onClick={onLeave}>
-        로비로 나가기
-      </button>
+      <div className="flex flex-col gap-3 mt-8">
+        {isHost && (
+          <button
+            onClick={handleEndGame}
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-colors"
+          >
+            게임 종료 (다같이 대기실로)
+          </button>
+        )}
+        <button
+          onClick={onLeave}
+          className="w-full bg-slate-700 hover:bg-slate-600 text-white font-medium py-3 px-4 rounded-xl shadow-lg transition-colors"
+        >
+          방 나가기
+        </button>
+      </div>
     </div>
   );
 }

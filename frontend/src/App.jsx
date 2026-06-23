@@ -43,6 +43,11 @@ function App() {
       setMyKeyword(data.keyword);
     });
 
+    socket.on('gameEnded', () => {
+      setGameState('WAITING');
+      setMyKeyword('가져오는 중...');
+    });
+
     return () => {
       socket.disconnect();
       socket.off('connect');
@@ -50,6 +55,7 @@ function App() {
       socket.off('errorMsg');
       socket.off('gameStarted');
       socket.off('yourKeyword');
+      socket.off('gameEnded');
     };
   }, []);
 
