@@ -22,8 +22,8 @@ function GameRoom({ roomId, isHost, keyword, category, onLeave }) {
     <div className="glass-panel">
       <h2>게임 진행 중</h2>
       
-      <p className="subtitle" style={{ color: '#fbbf24' }}>
-        주제에 맞게 자유롭게 대화하며 라이어를 색출하세요.
+      <p className="subtitle" style={{ color: '#fbbf24', fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
+        주제: {category || '카테고리 없음'}
       </p>
 
       <div className="keyword-box">
@@ -31,16 +31,7 @@ function GameRoom({ roomId, isHost, keyword, category, onLeave }) {
         <div className="keyword-text">{keyword}</div>
       </div>
 
-      <div className="status-message" style={{ margin: '20px 0' }}>
-        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '5px' }}>이번 라운드 주제</div>
-        <div style={{ fontSize: '1.2rem', fontWeight: '600', color: '#fff' }}>{category || '카테고리'}</div>
-      </div>
-
-      <div className="status-message" style={{ margin: '20px 0', background: 'rgba(255,255,255,0.05)' }}>
-        {gameStatus}
-      </div>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '30px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '20px' }}>
         {isHost && (
           <button
             onClick={handleEndGame}
